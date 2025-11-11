@@ -1,1 +1,146 @@
+# ...existing code...
+"""
+Maianianai — enkel dokumentasjon (på norsk).
 
+Beskrivelse:
+- Genererer tilfeldige tidspunkt mellom to datoer.
+- Definerer en baseklasse 'Bil' og to underklasser 'Bensinbil' og 'Elektrisk'.
+- Hver bil får 1–2 tilfeldige "passeringer" (tidspunkter) ved opprettelse.
+- Nederst vises et kort eksempel som oppretter noen bilobjekter og skriver ut info.
+
+Hvordan bruke:
+- Endre start_time og end_time for å justere intervallet for tilfeldige passeringer.
+- Opprett Bil / Bensinbil / Elektrisk med passende argumenter og kall visinfo().
+"""
+from datetime import datetime, timedelta
+import random as rd
+
+
+# TILFELDIG DATO/TID
+def random_datetime(start, end):
+    """Returner en tilfeldig datetime mellom start og end (inklusive).
+
+    Arg:
+        start (datetime): tidligste mulige tidspunkt
+        end   (datetime): seneste mulige tidspunkt
+
+    Return:
+        datetime: et tilfeldig tidspunkt i intervallet [start, end]
+    """
+    delta = end - start
+    random_seconds = rd.randint(0, int(delta.total_seconds()))
+    return start + timedelta(seconds=random_seconds)
+
+
+# Default tidsintervall for eksempler
+start_time = datetime(2025, 11, 1)
+end_time = datetime(2025, 11, 5)
+
+# Demonstrasjon: skriv ut ett tilfeldig tidspunkt
+rand_dt = random_datetime(start_time, end_time)
+print(rand_dt)
+
+
+# KLASSER
+
+class Bil:
+    biler = []
+
+    """Baseklasse som representerer en bil.
+
+    Attributter:
+        registrering (str): registreringsnummer
+        eier (str): eierens navn
+        model (str): modellnavn
+        bilmerke (str): bilmerke/merke
+        passeringer (list[datetime]): liste over tilfeldig genererte passeringstidspunkter
+    """
+
+    def __init__(self, registrering, eier, model, bilmerke):
+        # Lagre grunnleggende attributter
+        self.registrering = registrering
+        self.eier = eier
+        self.model = model
+        self.bilmerke = bilmerke
+        
+        Bil.biler.append(self)
+
+        # Generer 1–2 tilfeldige passeringstidspunkter innenfor start_time..end_time
+        self.passeringer = []
+        for _ in range(rd.randint(1, 2)):
+            self.passeringer.append(random_datetime(start_time, end_time))
+        
+       
+
+    def visinfo(self):
+        """Returner en kort, lesbar streng med bilens informasjon."""
+        return (
+            f"Registrering: {self.registrering}, "
+            f"Bileier: {self.eier}, "
+            f"Bilmodel: {self.model}, "
+            f"Bilmerke: {self.bilmerke}, "
+            f"Passeringer: {self.passeringer}"
+        )
+
+    def Registrer(self):
+        """Plassholder for en fremtidig registreringsmetode."""
+        return
+
+
+class Bensinbil(Bil):
+    """Underklasse for bensin/dieselbiler.
+
+    Legger til:
+        type (str):'blyfri' eller 'diesel'
+    """
+
+    def __init__(self, registrering, eier, model, bilmerke, type):
+        super().__init__(registrering, eier, model, bilmerke)
+        self.type = type
+
+    def visinfo(self):
+        """Utvider visinfo med informasjon om bensintype."""
+        return (
+            f"Registrering: {self.registrering}, "
+            f"Bileier: {self.eier}, "
+            f"Bilmodel: {self.model}, "
+            f"Bilmerke: {self.bilmerke}, "
+            f"Bensin: {self.type}, "
+            f"Passeringer: {self.passeringer}"
+        )
+
+
+class Elektrisk(Bil):
+    """Underklasse for elektriske/hybridbiler.
+
+    Legger til:
+        hybrid (bool): True hvis bilen er hybrid, ellers False
+    """
+
+    def __init__(self, registrering, eier, model, bilmerke, hybrid):
+        super().__init__(registrering, eier, model, bilmerke)
+        self.hybrid = hybrid
+
+    def visinfo(self):
+        """Utvider visinfo med informasjon om hybrid-status."""
+        return (
+            f"Registrering: {self.registrering}, "
+            f"Bileier: {self.eier}, "
+            f"Bilmodel: {self.model}, "
+            f"Bilmerke: {self.bilmerke}, "
+            f"Hybrid: {self.hybrid}, "
+            f"Passeringer: {self.passeringer}"
+        )
+
+
+# Eksempelbruk: opprett noen biler og skriv ut info
+bil1 = Bil("1111", "Jonas", "VOLKSWAGEN 11", "VOLKSWAGEN")
+bil2 = Bensinbil("2222", "Adrian", "VOLKSWAGEN 22", "VOLKSWAGEN", "blyfri")
+bil3 = Bensinbil("3333", "Adrian", "VOLKSWAGEN 33", "VOLKSWAGEN", "diesel")
+bil4 = Elektrisk("4444", "Adrian", "Hest", "Lamborghini", True)
+
+for bil in Bil.biler:
+    print(bil.visinfo())
+    
+    
+# ...existing code...
